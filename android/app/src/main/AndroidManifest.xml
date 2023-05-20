@@ -2,6 +2,7 @@
     <application
         android:label="pi3_flutter_1"
         android:name="${applicationName}"
+        android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

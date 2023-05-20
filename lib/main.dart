@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:camera_camera/camera_camera.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +10,11 @@ import 'package:flutter/material.dart';
 
 // firestore
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 import 'package:pi3_flutter_1/firebase_options.dart';
+
+import 'package:pi3_flutter_1/preview_page.dart';
+import 'package:pi3_flutter_1/widgets/attachment.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +31,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFBAE8E8)),
@@ -62,6 +69,20 @@ class _MyHomePageState extends State<MyHomePage> {
         .then((value) => debugPrint("Enviado com Sucesso!!"))
         .catchError((error) => debugPrint("Erro ao adicionar: $error"));
   }
+
+  //foto
+  late File pic;
+
+  // showPreview(file) async{
+  //   file = await Get.to(()=> PreviewPage(file: file));
+
+  //   if(file != null){
+  //     setState(() {
+  //       pic = file;
+  //       Get.back();
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +135,25 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
 
+            //botão foto
+            ElevatedButton.icon(
+              onPressed: () => Get.to(
+                () => CameraCamera(onFile: (pic) => Get.back()),
+              ),
+              icon: const Icon(Icons.camera_alt),
+              label: const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text('Tire uma foto'),
+              ),
+              style: ElevatedButton.styleFrom(
+                elevation: 0.0,
+                textStyle: const TextStyle(fontSize: 18),
+              ),
+            ),
+
+            //Attachment(),
+
+            //
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(
