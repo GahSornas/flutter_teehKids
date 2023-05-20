@@ -46,19 +46,20 @@ class _MyHomePageState extends State<MyHomePage> {
   //TextFieldControler
   final nameController = TextEditingController();
   final foneController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   //Referência ao firebase
   CollectionReference infoHelp =
       FirebaseFirestore.instance.collection('infoHelp');
 
   //Function para enviar informações para o firebase
-  Future<void> adicionarNome(String name, String tel) {
+  Future<void> launchInfoHelp(String name, String tel) {
     return infoHelp
         .add({
           'nome': name,
           'telefone': tel,
         })
-        .then((value) => debugPrint("Nome adicionado"))
+        .then((value) => debugPrint("Enviado com Sucesso!!"))
         .catchError((error) => debugPrint("Erro ao adicionar: $error"));
   }
 
@@ -71,47 +72,62 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Form(
+        key: _formKey,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             //Label do nome
-            Text(
-              'Digite seu nome:',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            TextFormField(
-              controller: nameController,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Informe um nome';
-                }
-                return null;
-              },
-            ),
-            //Label do telefone
-            Text(
-              'Digite seu número:',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            TextFormField(
-              controller: foneController,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Informe um nome';
-                }
-                return null;
-              },
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.account_circle),
+                  hintText: 'Nome',
+                  border: OutlineInputBorder(),
+                ),
+                controller: nameController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Informe um nome';
+                  }
+                  return null;
+                },
+              ),
             ),
 
-            const Padding(
-              padding: EdgeInsets.all(16.0),
-              //btn Subimit firebase
-              // child: ElevatedButton(
-              //   onPressed: () {
-              //     infoHelp(nameController.text, foneController.text);
-              //   },
-              //   child: Text('Submit'),
-              // ),
+            //Label do telefone
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.call),
+                  hintText: 'Telefone',
+                  border: OutlineInputBorder(),
+                ),
+                controller: foneController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Informe um telefone';
+                  }
+                  return null;
+                },
+              ),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    launchInfoHelp(nameController.text, foneController.text);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text('Gravando dados no Firestore...')),
+                    );
+                  }
+                },
+                child: const Text('Submit'),
+              ),
             ),
           ],
         ),
