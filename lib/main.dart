@@ -71,18 +71,18 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   //foto
-  late File pic;
+  late File pic = File('assets/images/default_camera.png');
 
-  // showPreview(file) async{
-  //   file = await Get.to(()=> PreviewPage(file: file));
+  showPreview(file) async {
+    file = await Get.to(() => PreviewPage(file: file));
 
-  //   if(file != null){
-  //     setState(() {
-  //       pic = file;
-  //       Get.back();
-  //     });
-  //   }
-  // }
+    if (file != null) {
+      setState(() {
+        pic = file;
+        Get.back();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -136,33 +136,21 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
 
             //botão foto
-            // ElevatedButton.icon(
-            //   onPressed: () => Get.to(
-            //     () => CameraCamera(onFile: (pic) => Get.back()),
-            //   ),
-            //   icon: const Icon(Icons.camera_alt),
-            //   label: const Padding(
-            //     padding: EdgeInsets.all(16.0),
-            //     child: Text('Tire uma foto'),
-            //   ),
-            //   style: ElevatedButton.styleFrom(
-            //     elevation: 0.0,
-            //     textStyle: const TextStyle(fontSize: 18),
-            //   ),
-            // ),
-            
-
-            IconButton(
-              icon: Image.asset(
-                'assets/images/default_camera.png',
-                width: 200,
-                height: 200,
-              ),
-              iconSize: 20,
+            ElevatedButton.icon(
               onPressed: () => Get.to(
-                () => CameraCamera(onFile: (pic) => Get.back()),
+                () => CameraCamera(onFile: (pic) => showPreview(pic)),
+              ),
+              icon: const Icon(Icons.camera_alt),
+              label: const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text('Tire uma foto'),
+              ),
+              style: ElevatedButton.styleFrom(
+                elevation: 0.0,
+                textStyle: const TextStyle(fontSize: 18),
               ),
             ),
+            Attachment(pic: pic),
 
             //btn gravar dados
             Padding(

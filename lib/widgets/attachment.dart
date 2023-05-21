@@ -1,28 +1,28 @@
-// import 'dart:io';
-// import 'package:flutter/material.dart';
+import 'dart:io';
+import 'package:flutter/material.dart';
 
+class Attachment extends StatelessWidget {
+  final File pic;
 
-// class Attachment extends StatelessWidget {
-//   late final File pic;
-  
-//   Attachment({super.key, this.pic});
+  const Attachment({super.key, required this.pic});
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.only(top: 24),
-//       child: Center(
-//         child: SizedBox(
-//           width: 200,
-//           height: 200,
-//           child: ClipRRect(
-//             child: Image.file(
-//               pic,
-//               fit: BoxFit.cover,
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 24),
+      child: Center(
+        child: SizedBox(
+          width: 200,
+          height: 300,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12.0),
+            child: Image.file(
+              pic,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
