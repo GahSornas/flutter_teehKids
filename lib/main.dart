@@ -92,14 +92,14 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Form(
+      body: SingleChildScrollView(
         key: _formKey,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             //Label do nome
             Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.only(left: 20.0, right: 20, top: 10),
               child: TextFormField(
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.account_circle),
@@ -118,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
             //Label do telefone
             Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.only(left: 20.0, right: 20, top: 20, bottom: 10),
               child: TextFormField(
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.call),

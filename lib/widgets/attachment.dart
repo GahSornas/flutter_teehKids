@@ -9,11 +9,11 @@ class Attachment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 24),
+      padding: const EdgeInsets.all(10),
       child: Center(
         child: SizedBox(
           width: 200,
-          height: 300,
+          height: 350,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12.0),
             child: Image.file(
