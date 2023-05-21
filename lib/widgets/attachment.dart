@@ -3,8 +3,9 @@
 
 
 // class Attachment extends StatelessWidget {
-//   const Attachment({super.key, this.pic});
-//   final File pic;
+//   late final File pic;
+  
+//   Attachment({super.key, this.pic});
 
 //   @override
 //   Widget build(BuildContext context) {

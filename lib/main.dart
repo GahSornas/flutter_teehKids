@@ -136,24 +136,35 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
 
             //botão foto
-            ElevatedButton.icon(
+            // ElevatedButton.icon(
+            //   onPressed: () => Get.to(
+            //     () => CameraCamera(onFile: (pic) => Get.back()),
+            //   ),
+            //   icon: const Icon(Icons.camera_alt),
+            //   label: const Padding(
+            //     padding: EdgeInsets.all(16.0),
+            //     child: Text('Tire uma foto'),
+            //   ),
+            //   style: ElevatedButton.styleFrom(
+            //     elevation: 0.0,
+            //     textStyle: const TextStyle(fontSize: 18),
+            //   ),
+            // ),
+            
+
+            IconButton(
+              icon: Image.asset(
+                'assets/images/default_camera.png',
+                width: 200,
+                height: 200,
+              ),
+              iconSize: 20,
               onPressed: () => Get.to(
                 () => CameraCamera(onFile: (pic) => Get.back()),
               ),
-              icon: const Icon(Icons.camera_alt),
-              label: const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text('Tire uma foto'),
-              ),
-              style: ElevatedButton.styleFrom(
-                elevation: 0.0,
-                textStyle: const TextStyle(fontSize: 18),
-              ),
             ),
 
-            //Attachment(),
-
-            //
+            //btn gravar dados
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(
