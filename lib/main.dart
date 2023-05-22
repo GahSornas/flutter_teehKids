@@ -1,20 +1,24 @@
 import 'dart:io';
-
-import 'package:camera_camera/camera_camera.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:camera_camera/camera_camera.dart';
 
 // firebase
-// import 'firebase_options.dart';
-// import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 // firestore
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:pi3_flutter_1/firebase_options.dart';
 
+// Widgets
 import 'package:pi3_flutter_1/preview_page.dart';
 import 'package:pi3_flutter_1/widgets/attachment.dart';
+
+// Storage
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path/path.dart' as path;
+import 'package:image_picker/image_picker.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +36,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFBAE8E8)),
@@ -59,15 +64,19 @@ class _MyHomePageState extends State<MyHomePage> {
   CollectionReference infoHelp =
       FirebaseFirestore.instance.collection('infoHelp');
 
-  //Function para enviar informações para o firebase
-  Future<void> launchInfoHelp(String name, String tel) {
-    return infoHelp
+  //Function para enviar informações para o firestorage
+  Future<void> launchInfoHelp(String name, String tel) async {
+    XFile? file = await getImage();
+    if(file != null){
+      await upload(file.path);
+      return infoHelp
         .add({
           'nome': name,
           'telefone': tel,
         })
         .then((value) => debugPrint("Enviado com Sucesso!!"))
         .catchError((error) => debugPrint("Erro ao adicionar: $error"));
+    }   
   }
 
   //foto
@@ -84,6 +93,27 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  final FirebaseStorage storage = FirebaseStorage.instance;
+
+  Future<XFile?> getImage() async {
+
+    final ImagePicker _picker = ImagePicker();
+    XFile? image = await _picker.pickImage(source: ImageSource.camera);
+    return image;
+
+  }
+
+  Future<void> upload(String path) async {
+    File file = File(path);
+    try{
+      String ref = 'emergencias/2/img-${DateTime.now().toString()}.jpeg';
+      await storage.ref(ref).putFile(file);
+    } on FirebaseException catch (e) {
+        throw Exception(('Erro no upload: ${e.code}'));
+    }
+    
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: SingleChildScrollView(
+      body: Form(
         key: _formKey,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
