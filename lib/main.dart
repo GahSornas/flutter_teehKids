@@ -66,7 +66,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   //Function para enviar informações para o firestorage
   Future<void> launchInfoHelp(String name, String tel) async {
-      await upload(pic.path);
+      if(pic != File('assets/images/default_camera.png')){
+         await upload(pic.path);
       return infoHelp
         .add({
           'nome': name,
@@ -74,6 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
         })
         .then((value) => debugPrint("Enviado com Sucesso!!"))
         .catchError((error) => debugPrint("Erro ao adicionar: $error"));  
+      }
   }
 
   //foto
@@ -91,14 +93,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   final FirebaseStorage storage = FirebaseStorage.instance;
-
-  Future<XFile?> getImage() async {
-
-    final ImagePicker _picker = ImagePicker();
-    XFile? image = await _picker.pickImage(source: ImageSource.camera);
-    return image;
-
-  }
 
   Future<void> upload(String path) async {
     File file = File(path);
@@ -183,13 +177,13 @@ class _MyHomePageState extends State<MyHomePage> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    launchInfoHelp(nameController.text, foneController.text);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('Gravando dados no Firestore...')),
-                    );
+                onPressed: () {  
+                      if (_formKey.currentState!.validate()) {
+                      launchInfoHelp(nameController.text, foneController.text);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Gravando dados no Firestore...')),
+                      );
                   }
                 },
                 child: const Text('Submit'),
