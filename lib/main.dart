@@ -66,17 +66,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   //Function para enviar informações para o firestorage
   Future<void> launchInfoHelp(String name, String tel) async {
-    XFile? file = await getImage();
-    if(file != null){
-      await upload(file.path);
+      await upload(pic.path);
       return infoHelp
         .add({
           'nome': name,
           'telefone': tel,
         })
         .then((value) => debugPrint("Enviado com Sucesso!!"))
-        .catchError((error) => debugPrint("Erro ao adicionar: $error"));
-    }   
+        .catchError((error) => debugPrint("Erro ao adicionar: $error"));  
   }
 
   //foto
