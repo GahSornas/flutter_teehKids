@@ -13,12 +13,15 @@ import 'package:pi3_flutter_1/firebase_options.dart';
 // Widgets
 import 'package:pi3_flutter_1/preview_page.dart';
 import 'package:pi3_flutter_1/widgets/attachment.dart';
+import 'package:pi3_flutter_1/widgets/notification.dart';
 
 // Storage
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:path/path.dart' as path;
-import 'package:image_picker/image_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
+
+final FirebaseAuth auth = FirebaseAuth.instance;
+final FirebaseStorage storage = FirebaseStorage.instance;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -64,23 +67,45 @@ class _MyHomePageState extends State<MyHomePage> {
   CollectionReference infoHelp =
       FirebaseFirestore.instance.collection('infoHelp');
 
+  //Notification
+  NotificationServices notificationServices = NotificationServices();
+
+  @override
+  void initState(){
+    super.initState();
+    notificationServices.requestNotificationPermission();
+  }
   //Function para enviar informações para o firestorage
-  Future<void> launchInfoHelp(String name, String tel) async {
-      if(pic != File('assets/images/default_camera.png')){
-         await upload(pic.path);
-      return infoHelp
-        .add({
-          'nome': name,
-          'telefone': tel,
-          'statusEmergencia': 'pendente',
-        })
-        .then((value) => debugPrint("Enviado com Sucesso!!"))
-        .catchError((error) => debugPrint("Erro ao adicionar: $error"));  
+  Future<void> launchInfoHelp(String name, String tel, String path) async {
+    if(pic != File('assets/images/default_camera.png')){
+
+        String fcmToken = await notificationServices.getDeviceToken();
+        User? user = (await auth.signInAnonymously()).user!;
+
+
+        File file = File(path);
+        try{
+          String ref = 'emergencias/2/img-${name}-${user.uid}.jpeg';
+          await storage.ref(ref).putFile(file);
+        } on FirebaseException catch (e) {
+            throw Exception(('Erro no upload: ${e.code}'));
+        }
+
+          return infoHelp
+            .add({
+              'nome': name,
+              'telefone': tel,
+              'statusEmergencia': 'pendente',
+              'FCM Token': fcmToken,
+              'UID': user.uid,
+            })
+            .then((value) => debugPrint("Enviado com Sucesso!!"))
+            .catchError((error) => debugPrint("Erro ao adicionar: $error"));  
       }
   }
 
   //foto
-  late File pic = File('assets/images/default_camera.png');
+  File pic = File('assets/images/default_camera.png');
 
   showPreview(file) async {
     file = await Get.to(() => PreviewPage(file: file));
@@ -91,19 +116,6 @@ class _MyHomePageState extends State<MyHomePage> {
         Get.back();
       });
     }
-  }
-
-  final FirebaseStorage storage = FirebaseStorage.instance;
-
-  Future<void> upload(String path) async {
-    File file = File(path);
-    try{
-      String ref = 'emergencias/2/img-${DateTime.now().toString()}.jpeg';
-      await storage.ref(ref).putFile(file);
-    } on FirebaseException catch (e) {
-        throw Exception(('Erro no upload: ${e.code}'));
-    }
-    
   }
 
   @override
@@ -180,7 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: ElevatedButton(
                 onPressed: () {  
                       if (_formKey.currentState!.validate()) {
-                      launchInfoHelp(nameController.text, foneController.text);
+                      launchInfoHelp(nameController.text, foneController.text, pic.path);
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                             content: Text('Gravando dados no Firestore...')),
