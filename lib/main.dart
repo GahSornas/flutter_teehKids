@@ -14,6 +14,7 @@ import 'package:pi3_flutter_1/firebase_options.dart';
 import 'package:pi3_flutter_1/preview_page.dart';
 import 'package:pi3_flutter_1/widgets/attachment.dart';
 import 'package:pi3_flutter_1/widgets/notification.dart';
+import 'package:pi3_flutter_1/emergency_page.dart';
 
 // Storage
 import 'package:firebase_storage/firebase_storage.dart';
@@ -85,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
         File file = File(path);
         try{
-          String ref = 'emergencias/2/img-${name}-${user.uid}.jpeg';
+          String ref = 'emergencias/2/img-$name-${user.uid}.jpeg';
           await storage.ref(ref).putFile(file);
         } on FirebaseException catch (e) {
             throw Exception(('Erro no upload: ${e.code}'));
@@ -128,63 +129,65 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Form(
         key: _formKey,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            //Label do nome
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0, right: 20, top: 10),
-              child: TextFormField(
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.account_circle),
-                  hintText: 'Nome',
-                  border: OutlineInputBorder(),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              //Label do nome
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0, right: 20, top: 10),
+                child: TextFormField(
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.account_circle),
+                    hintText: 'Nome',
+                    border: OutlineInputBorder(),
+                  ),
+                  controller: nameController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Informe um nome';
+                    }
+                    return null;
+                  },
                 ),
-                controller: nameController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Informe um nome';
-                  }
-                  return null;
-                },
               ),
-            ),
 
-            //Label do telefone
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0, right: 20, top: 20, bottom: 10),
-              child: TextFormField(
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.call),
-                  hintText: 'Telefone',
-                  border: OutlineInputBorder(),
+              //Label do telefone
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 20.0, right: 20, top: 20, bottom: 10),
+                child: TextFormField(
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.call),
+                    hintText: 'Telefone',
+                    border: OutlineInputBorder(),
+                  ),
+                  controller: foneController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Informe um telefone';
+                    }
+                    return null;
+                  },
                 ),
-                controller: foneController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Informe um telefone';
-                  }
-                  return null;
-                },
               ),
-            ),
 
-            //botão foto
-            ElevatedButton.icon(
-              onPressed: () => Get.to(
-                () => CameraCamera(onFile: (pic) => showPreview(pic)),
+              //botão foto
+              ElevatedButton.icon(
+                onPressed: () => Get.to(
+                  () => CameraCamera(onFile: (pic) => showPreview(pic)),
+                ),
+                icon: const Icon(Icons.camera_alt),
+                label: const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text('Tire uma foto'),
+                ),
+                style: ElevatedButton.styleFrom(
+                  elevation: 0.0,
+                  textStyle: const TextStyle(fontSize: 18),
+                ),
               ),
-              icon: const Icon(Icons.camera_alt),
-              label: const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text('Tire uma foto'),
-              ),
-              style: ElevatedButton.styleFrom(
-                elevation: 0.0,
-                textStyle: const TextStyle(fontSize: 18),
-              ),
-            ),
-            Attachment(pic: pic),
+              Attachment(pic: pic),
 
             //btn gravar dados
             Padding(
@@ -193,16 +196,31 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {  
                       if (_formKey.currentState!.validate()) {
                       launchInfoHelp(nameController.text, foneController.text, pic.path);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const EmergenciesPage()),
+                      );
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                             content: Text('Gravando dados no Firestore...')),
                       );
-                  }
-                },
-                child: const Text('Submit'),
+                    }
+                  },
+                  child: const Text('Submit'),
+                ),
               ),
-            ),
-          ],
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const EmergenciesPage()),
+                    );
+                  },
+                  child: const Text('proximo'))
+            ],
+          ),
         ),
       ),
     );
