@@ -66,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   //Referência ao firebase
   CollectionReference infoHelp =
-      FirebaseFirestore.instance.collection('infoHelp');
+      FirebaseFirestore.instance.collection('emergencias');
 
   //Notification
   NotificationServices notificationServices = NotificationServices();
@@ -97,9 +97,9 @@ class _MyHomePageState extends State<MyHomePage> {
               'nome': name,
               'telefone': tel,
               'status': 'new',
-              'FCM Token': fcmToken,
-              'UID': user.uid,
-              'caminhoDaImagem': pic.path,
+              'FCMToken': fcmToken,
+              'uid': user.uid,
+              'ImageRoot': 'emergencias/2/img-$name-${user.uid}.jpeg',
             })
             .then((value) => debugPrint("Enviado com Sucesso!!"))
             .catchError((error) => debugPrint("Erro ao adicionar: $error"));  
@@ -200,7 +200,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const EmergenciesPage()),
+                            builder: (context) =>  EmergenciesPage()),
                       );
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -216,7 +216,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const EmergenciesPage()),
+                          builder: (context) => EmergenciesPage()),
                     );
                   },
                   child: const Text('proximo'))

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -11,14 +12,24 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const EmergenciesPage());
+  runApp(EmergenciesPage());
 }
 
 class EmergenciesPage extends StatelessWidget {
-  const EmergenciesPage({super.key});
+   EmergenciesPage({super.key});
 
-  //var db = Firebase.firestorage;
-  
+  var db = FirebaseFirestore.instance;
+
+
+  getInfo() async{
+    var infoEmergencies = db.collection("emergencia");
+    await db.collection('emergencias').get().then((event) => {
+      for (var doc in event.docs) {
+      print("${doc.id} => ${doc.data()}")
+    }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +37,9 @@ class EmergenciesPage extends StatelessWidget {
         backgroundColor: const Color(0xFFBAE8E8),
         title: const Text('TeehKids'),
       ),
-      body: Scaffold()
+      body: Scaffold(
+        
+      )
     );
   }
 }
