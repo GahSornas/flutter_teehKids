@@ -96,9 +96,10 @@ class _MyHomePageState extends State<MyHomePage> {
             .add({
               'nome': name,
               'telefone': tel,
-              'statusEmergencia': 'pendente',
+              'status': 'new',
               'FCM Token': fcmToken,
               'UID': user.uid,
+              'caminhoDaImagem': pic.path,
             })
             .then((value) => debugPrint("Enviado com Sucesso!!"))
             .catchError((error) => debugPrint("Erro ao adicionar: $error"));  

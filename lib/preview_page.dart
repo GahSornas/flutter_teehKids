@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+// ignore: must_be_immutable
 class PreviewPage extends StatelessWidget {
   PreviewPage({super.key, required this.file});
   late File file;
