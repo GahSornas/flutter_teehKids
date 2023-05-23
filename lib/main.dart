@@ -211,15 +211,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: const Text('Submit'),
                 ),
               ),
-              ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => EmergenciesPage()),
-                    );
-                  },
-                  child: const Text('proximo'))
             ],
           ),
         ),
