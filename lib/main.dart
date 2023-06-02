@@ -13,13 +13,14 @@ import 'package:pi3_flutter_1/firebase_options.dart';
 // Widgets
 import 'package:pi3_flutter_1/preview_page.dart';
 import 'package:pi3_flutter_1/widgets/attachment.dart';
+import 'package:pi3_flutter_1/widgets/attachment2.dart';
+import 'package:pi3_flutter_1/widgets/attachment3.dart';
 import 'package:pi3_flutter_1/widgets/notification.dart';
 import 'package:pi3_flutter_1/emergency_page.dart';
 
 // Storage
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 final FirebaseStorage storage = FirebaseStorage.instance;
@@ -72,49 +73,87 @@ class _MyHomePageState extends State<MyHomePage> {
   NotificationServices notificationServices = NotificationServices();
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     notificationServices.requestNotificationPermission();
   }
+
   //Function para enviar informações para o firestorage
-  Future<void> launchInfoHelp(String name, String tel, String path) async {
-    if(pic != File('assets/images/default_camera.png')){
+  Future<void> launchInfoHelp(
+      String name, String tel, String path1, String path2, String path3) async {
+    if (pic != File('assets/images/default_camera.png')) {
+      String fcmToken = await notificationServices.getDeviceToken();
+      User? user = (await auth.signInAnonymously()).user!;
 
-        String fcmToken = await notificationServices.getDeviceToken();
-        User? user = (await auth.signInAnonymously()).user!;
+      File file1 = File(path1);
+      File file2 = File(path2);
+      File file3 = File(path3);
 
-
-        File file = File(path);
-        try{
-          String ref = 'emergencias/2/img-$name-${user.uid}.jpeg';
-          await storage.ref(ref).putFile(file);
-        } on FirebaseException catch (e) {
-            throw Exception(('Erro no upload: ${e.code}'));
-        }
-
-          return infoHelp
-            .add({
-              'nome': name,
-              'telefone': tel,
-              'status': 'new',
-              'FCMToken': fcmToken,
-              'uid': user.uid,
-              'ImageRoot': 'emergencias/2/img-$name-${user.uid}.jpeg',
-            })
-            .then((value) => debugPrint("Enviado com Sucesso!!"))
-            .catchError((error) => debugPrint("Erro ao adicionar: $error"));  
+      try {
+        String ref1 = 'emergencias/2/img1-$name-${user.uid}.jpeg';
+        await storage.ref(ref1).putFile(file1);
+      } on FirebaseException catch (e) {
+        throw Exception(('Erro no upload: ${e.code}'));
       }
+      try {
+        String ref2 = 'emergencias/2/img2-$name-${user.uid}.jpeg';
+        await storage.ref(ref2).putFile(file2);
+      } on FirebaseException catch (e) {
+        throw Exception(('Erro no upload: ${e.code}'));
+      }
+      try {
+        String ref3 = 'emergencias/2/img3-$name-${user.uid}.jpeg';
+        await storage.ref(ref3).putFile(file3);
+      } on FirebaseException catch (e) {
+        throw Exception(('Erro no upload: ${e.code}'));
+      }
+
+      return infoHelp
+          .add({
+            'nome': name,
+            'telefone': tel,
+            'status': 'new',
+            'FCMToken': fcmToken,
+            'uid': user.uid,
+            'ImageRoot1': 'emergencias/2/img1-$name-${user.uid}.jpeg',
+            'ImageRoot2': 'emergencias/2/img2-$name-${user.uid}.jpeg',
+            'ImageRoot3': 'emergencias/2/img3-$name-${user.uid}.jpeg',
+          })
+          .then((value) => debugPrint("Enviado com Sucesso!!"))
+          .catchError((error) => debugPrint("Erro ao adicionar: $error"));
+    }
   }
 
   //foto
   File pic = File('assets/images/default_camera.png');
+  File pic2 = File('assets/images/default_camera.png');
+  File pic3 = File('assets/images/default_camera.png');
 
   showPreview(file) async {
     file = await Get.to(() => PreviewPage(file: file));
-
     if (file != null) {
       setState(() {
         pic = file;
+        Get.back();
+      });
+    }
+  }
+
+  showPreview2(file) async {
+    file = await Get.to(() => PreviewPage(file: file));
+    if (file != null) {
+      setState(() {
+        pic2 = file;
+        Get.back();
+      });
+    }
+  }
+
+  showPreview3(file) async {
+    file = await Get.to(() => PreviewPage(file: file));
+    if (file != null) {
+      setState(() {
+        pic3 = file;
         Get.back();
       });
     }
@@ -156,7 +195,7 @@ class _MyHomePageState extends State<MyHomePage> {
               //Label do telefone
               Padding(
                 padding: const EdgeInsets.only(
-                    left: 20.0, right: 20, top: 20, bottom: 10),
+                    left: 20.0, right: 20, top: 10, bottom: 5),
                 child: TextFormField(
                   decoration: const InputDecoration(
                     prefixIcon: Icon(Icons.call),
@@ -174,33 +213,76 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
 
               //botão foto
-              ElevatedButton.icon(
-                onPressed: () => Get.to(
-                  () => CameraCamera(onFile: (pic) => showPreview(pic)),
-                ),
-                icon: const Icon(Icons.camera_alt),
-                label: const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text('Tire uma foto'),
-                ),
-                style: ElevatedButton.styleFrom(
-                  elevation: 0.0,
-                  textStyle: const TextStyle(fontSize: 18),
-                ),
-              ),
-              Attachment(pic: pic),
 
-            //btn gravar dados
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton(
-                onPressed: () {  
-                      if (_formKey.currentState!.validate()) {
-                      launchInfoHelp(nameController.text, foneController.text, pic.path);
+              Row(
+                children: [
+                  Attachment(pic: pic),
+                  ElevatedButton.icon(
+                    onPressed: () => Get.to(
+                      () => CameraCamera(onFile: (pic) => showPreview(pic)),
+                    ),
+                    icon: const Icon(Icons.camera_alt),
+                    label: const Padding(
+                      padding: EdgeInsets.all(0.0),
+                      child: Text('Boca da Criança'),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0.0,
+                      textStyle: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Attachment2(pic2: pic2),
+                  ElevatedButton.icon(
+                    onPressed: () => Get.to(
+                      () => CameraCamera(onFile: (pic2) => showPreview2(pic2)),
+                    ),
+                    icon: const Icon(Icons.camera_alt),
+                    label: const Padding(
+                      padding: EdgeInsets.all(0.0),
+                      child: Text('Selfie com a Criança'),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0.0,
+                      textStyle: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
+              Row(children: [
+                Attachment3(pic3: pic3),
+                ElevatedButton.icon(
+                  onPressed: () => Get.to(
+                    () => CameraCamera(onFile: (pic3) => showPreview3(pic3)),
+                  ),
+                  icon: const Icon(Icons.camera_alt),
+                  label: const Padding(
+                    padding: EdgeInsets.all(0.0),
+                    child: Text('Foto com Documento'),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    elevation: 0.0,
+                    textStyle: const TextStyle(fontSize: 16),
+                  ),
+                ),
+              ]),
+
+              //btn gravar dados
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      launchInfoHelp(nameController.text, foneController.text,
+                          pic.path, pic2.path, pic3.path);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>  EmergenciesPage()),
+                          builder: (context) => EmergenciesPage(),
+                        ),
                       );
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -208,9 +290,18 @@ class _MyHomePageState extends State<MyHomePage> {
                       );
                     }
                   },
-                  child: const Text('Submit'),
+                  child: const Text('Enviar'),
                 ),
               ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => EmergenciesPage()),
+                  );
+                },
+                child: const Text('proximo'),
+              )
             ],
           ),
         ),

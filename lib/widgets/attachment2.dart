@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 
-class Attachment extends StatelessWidget {
-  final File pic;
+class Attachment2 extends StatelessWidget {
+  final File pic2;
 
-  const Attachment({super.key, required this.pic});
+  const Attachment2({super.key, required this.pic2});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class Attachment extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12.0),
             child: Image.file(
-              pic,
+              pic2,
               fit: BoxFit.cover,
             ),
           ),
