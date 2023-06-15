@@ -41,7 +41,7 @@ class EmergenciesPage extends StatelessWidget {
   }
 
   Future<void> _callCloudFunction() async {
-    
+
     //pegar UID
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user = auth.currentUser;
@@ -53,20 +53,21 @@ class EmergenciesPage extends StatelessWidget {
       print('Usuário não autenticado.');
     }
 
-
     try {
       final HttpsCallable callable =
           FirebaseFunctions.instanceFor(region: 'southamerica-east1')
               .httpsCallable('getAcceptedBy');
 
-      final response =
-          await callable.call({'uid': user?.uid});
+      final response = await callable.call({'uid': user?.uid});
       final data = response.data as List<dynamic>;
 
-      // Handle the result as per your needs
-      print(data);
+      //loop para pegar informações separadas e printar no terminal, nome apenas por enquanto
+      for (var informacao in data) {
+        String nome = informacao['nome'];
+        print('Nome: $nome');
+
+      }
     } catch (e) {
-      // Handle any errors that occur during the function call
       print('Error calling Cloud Function: $e');
     }
   }
