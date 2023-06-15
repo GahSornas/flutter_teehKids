@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFBAE8E8)),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'TeehKids'),
+      home: const MyHomePage(title: 'OdontApp'),
     );
   }
 }
@@ -164,7 +164,8 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       //TopBar
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Color(0xFFB8D5F5),
+        centerTitle: true,
         title: Text(widget.title),
       ),
       body: Form(
@@ -224,7 +225,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     icon: const Icon(Icons.camera_alt),
                     label: const Padding(
                       padding: EdgeInsets.all(0.0),
-                      child: Text('Boca da Criança'),
+                      child: Text('Boca da criança'),
                     ),
                     style: ElevatedButton.styleFrom(
                       elevation: 0.0,
@@ -243,7 +244,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     icon: const Icon(Icons.camera_alt),
                     label: const Padding(
                       padding: EdgeInsets.all(0.0),
-                      child: Text('Selfie com a Criança'),
+                      child: Text('Selfie com a criança'),
                     ),
                     style: ElevatedButton.styleFrom(
                       elevation: 0.0,
@@ -261,7 +262,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   icon: const Icon(Icons.camera_alt),
                   label: const Padding(
                     padding: EdgeInsets.all(0.0),
-                    child: Text('Foto com Documento'),
+                    child: Text('Documento do responsável'),
                   ),
                   style: ElevatedButton.styleFrom(
                     elevation: 0.0,
