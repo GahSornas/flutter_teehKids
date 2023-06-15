@@ -5,6 +5,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,13 +41,26 @@ class EmergenciesPage extends StatelessWidget {
   }
 
   Future<void> _callCloudFunction() async {
+    
+    //pegar UID
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user = auth.currentUser;
+
+    if (user != null) {
+      String uid = user.uid;
+      print('UID do usuário: $uid');
+    } else {
+      print('Usuário não autenticado.');
+    }
+
+
     try {
       final HttpsCallable callable =
           FirebaseFunctions.instanceFor(region: 'southamerica-east1')
               .httpsCallable('getAcceptedBy');
 
       final response =
-          await callable.call({'uid': 'Fg1o5OMIGNdlWxhP6ZrkzxMjNPD3'});
+          await callable.call({'uid': user?.uid});
       final data = response.data as List<dynamic>;
 
       // Handle the result as per your needs

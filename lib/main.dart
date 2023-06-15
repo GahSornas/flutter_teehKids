@@ -286,7 +286,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       );
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                            content: Text('Gravando dados no Firestore...')),
+                          content: Text('Gravando dados no Firestore...'),
+                        ),
                       );
                     }
                   },
