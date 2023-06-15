@@ -7,7 +7,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFFB8D5F5),
+        backgroundColor: Color(0xFFBAE8E8),
         centerTitle: true,
         title: Text(
           'OdontApp',
