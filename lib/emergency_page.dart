@@ -40,8 +40,8 @@ class EmergenciesPage extends StatelessWidget {
     }
   }
 
-  Future<void> _callCloudFunction() async {
-
+  List<String> nomes = [];
+  Future<String?> _callCloudFunction() async {
     //pegar UID
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user = auth.currentUser;
@@ -62,10 +62,11 @@ class EmergenciesPage extends StatelessWidget {
       final data = response.data as List<dynamic>;
 
       //loop para pegar informações separadas e printar no terminal, nome apenas por enquanto
+
       for (var informacao in data) {
         String nome = informacao['nome'];
+        nomes.add(nome);
         print('Nome: $nome');
-
       }
     } catch (e) {
       print('Error calling Cloud Function: $e');
@@ -79,14 +80,16 @@ class EmergenciesPage extends StatelessWidget {
         backgroundColor: const Color(0xFFBAE8E8),
         title: const Text('TeehKids'),
       ),
-      body: Center(
-        child: ElevatedButton(
-          child: const Text('Call Cloud Function'),
-          onPressed: () {
-            _callCloudFunction();
-          },
-        ),
+      body: ListView.builder(
+        itemCount: 5,
+        itemBuilder: (context, index) {
+          return ElevatedButton(
+            onPressed: () {},
+            child: Text("nomes[index]"),
+          );
+        },
       ),
+      
     );
   }
 }
