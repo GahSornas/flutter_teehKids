@@ -1,162 +1,126 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_functions/cloud_functions.dart';
-import 'firebase_options.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+
+class User {
+  final String name;
+  final String photoPath;
+  final String information;
+  final LatLng location;
+
+  User({
+    required this.name,
+    required this.photoPath,
+    required this.information,
+    required this.location,
+  });
+}
+
+void main() {
   runApp(EmergenciesPage());
 }
 
 class EmergenciesPage extends StatelessWidget {
-  EmergenciesPage({super.key});
+  EmergenciesPage({Key? key}) : super(key: key);
 
-  var db = FirebaseFirestore.instance;
+  final List<User> users = [
+    User(
+      name: 'Jorge Machado',
+      photoPath: 'assets/images/jorge.png',
+      information: '★ ★ ★ ★ ☆',
+      location: LatLng(-23.5505, -46.6333),
+    ),
+    User(
+      name: 'Ana Clara Falcão',
+      photoPath: 'assets/images/ana.png',
+      information: '★ ★ ★ ☆ ☆',
+      location: LatLng(-23.5505, -46.6333),
+    ),
+    User(
+      name: 'Matheus Cavalcante',
+      photoPath: 'assets/images/matheus.png',
+      information: '★ ★ ★ ☆ ☆',
+      location: LatLng(40.7128, -74.0060),
+    ),
+    User(
+      name: 'Rodrigo da Silva',
+      photoPath: 'assets/images/rodrigo.png',
+      information: '★ ★ ☆ ☆ ☆',
+      location: LatLng(-33.8675, 151.2070),
+    ),
+    User(
+      name: 'Marcia Souza',
+      photoPath: 'assets/images/marcia.png',
+      information: '★ ★ ★ ★ ☆',
+      location: LatLng(25.2048, 55.2708),
+    ),
+  ];
 
-  final functions = FirebaseFunctions.instance;
+  void openGoogleMaps(LatLng destination) async {
+    LocationPermission permission;
 
-  final firestoreInstance = FirebaseFirestore.instance;
-
-  final HttpsCallable callable =
-      FirebaseFunctions.instanceFor(region: 'southamerica-east1')
-          .httpsCallable('listAllEmergencies');
-
-  Future<List<dynamic>> callFirebaseFunction() async {
-    try {
-      final result = await callable.call();
-      final List<dynamic> data = result.data;
-      return data;
-    } catch (e) {
-      print('Error calling Firebase function: $e');
-      return [];
+    // Verifica a permissão de localização
+    if (!await Geolocator.isLocationServiceEnabled()) {
+      print('Serviço de localização desabilitado');
+      return;
     }
-  }
 
-  // List<String> nomes = [];
-  // Future<String?> _callCloudFunction() async {
-  //   //pegar UID
-  //   FirebaseAuth auth = FirebaseAuth.instance;
-  //   User? user = auth.currentUser;
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission != LocationPermission.whileInUse && permission != LocationPermission.always) {
+        print('Permissão de localização negada');
+        return;
+      }
+    }
 
-  //   if (user != null) {
-  //     String uid = user.uid;
-  //     print('UID do usuário: $uid');
-  //   } else {
-  //     print('Usuário não autenticado.');
-  //   }
+    if (permission == LocationPermission.deniedForever) {
+      print('Permissão de localização negada permanentemente');
+      return;
+    }
 
-  //   try {
-  //     final HttpsCallable callable =
-  //         FirebaseFunctions.instanceFor(region: 'southamerica-east1')
-  //             .httpsCallable('getAcceptedBy');
+    // Obtém a posição atual
+    Position position = await Geolocator.getCurrentPosition();
 
-  //     final response = await callable.call({'uid': user?.uid});
-  //     final data = response.data as List<dynamic>;
+    // Cria as coordenadas de origem e destino
+    LatLng origin = LatLng(position.latitude, position.longitude);
 
-  //     //loop para pegar informações separadas e printar no terminal, nome apenas por enquanto
-
-  //     for (var informacao in data) {
-  //       String nome = informacao['nome'];
-  //       nomes.add(nome);
-  //       print('Nome: $nome');
-  //     }
-  //   } catch (e) {
-  //     print('Error calling Cloud Function: $e');
-  //   }
-  // }
-
-  String getCurrentUserId() {
-    final FirebaseAuth auth = FirebaseAuth.instance;
-    final User? user = auth.currentUser;
-
-    if (user != null) {
-      final String uid = user.uid;
-      return uid;
+    final url = 'https://www.google.com/maps/dir/?api=1&origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}';
+    if (await canLaunch(url)) {
+      await launch(url);
     } else {
-      return '';
-    }
-  }
-
-  Future<List<dynamic>> fetchAcceptedBy(String uid) async {
-    final HttpsCallable callable =
-        FirebaseFunctions.instance.httpsCallable('getAcceptedBy');
-
-    try {
-      final result = await callable.call({'uid': uid});
-      final List<dynamic> acceptedByList = List.from(result.data);
-      return acceptedByList;
-    } catch (e) {
-      print('Error calling getAcceptedBy function: $e');
-      return [];
-    }
-  }
-
-  void fetchDataAndDisplay() async {
-    final uid =
-        getCurrentUserId(); // O UID que você deseja passar para a função
-    final acceptedByList = await fetchAcceptedBy(uid);
-
-    // Exiba as informações no aplicativo como desejar
-    if (acceptedByList.isNotEmpty) {
-      acceptedByList.forEach((data) {
-        print(data.toString()); // Exemplo de exibição no console
-      });
-    } else {
-      print('Nenhum dado encontrado');
+      print('Erro ao abrir o Google Maps');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFBAE8E8),
-        title: const Text('OdontApp'),
-      ),
-      body: ListView.builder(
-        itemCount: 1,
-        itemBuilder: (context, index) {
-          return Column(
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  fetchDataAndDisplay();
-                },
-                child: Text('Nome1               5'),
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color(0xFFBAE8E8),
+          title: const Text('OdontApp'),
+        ),
+        body: ListView.builder(
+          itemCount: users.length,
+          itemBuilder: (context, index) {
+            final user = users[index];
+            return ListTile(
+              leading: CircleAvatar(
+                backgroundImage: AssetImage(user.photoPath),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  fetchDataAndDisplay();
-                },
-                child: Text('Nome2'),
+              title: Text(user.name),
+              subtitle: Text(user.information),
+              trailing: IconButton(
+                icon: Icon(Icons.map),
+                onPressed: () => openGoogleMaps(user.location),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  fetchDataAndDisplay();
-                },
-                child: Text('Nome3'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  fetchDataAndDisplay();
-                },
-                child: Text('Nome4'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  fetchDataAndDisplay();
-                },
-                child: Text('Nome5'),
-              ),
-            ],
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

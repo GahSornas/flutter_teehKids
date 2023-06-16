@@ -77,6 +77,40 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     notificationServices.requestNotificationPermission();
   }
+//foto
+  File pic = File('assets/images/default_camera.png');
+  File pic2 = File('assets/images/default_camera.png');
+  File pic3 = File('assets/images/default_camera.png');
+
+  showPreview(file) async {
+    file = await Get.to(() => PreviewPage(file: file));
+    if (file != null) {
+      setState(() {
+        pic = file;
+        Get.back();
+      });
+    }
+  }
+
+  showPreview2(file) async {
+    file = await Get.to(() => PreviewPage(file: file));
+    if (file != null) {
+      setState(() {
+        pic2 = file;
+        Get.back();
+      });
+    }
+  }
+
+  showPreview3(file) async {
+    file = await Get.to(() => PreviewPage(file: file));
+    if (file != null) {
+      setState(() {
+        pic3 = file;
+        Get.back();
+      });
+    }
+  }
 
   //Function para enviar informações para o firestorage
   Future<void> launchInfoHelp(
@@ -124,40 +158,6 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  //foto
-  File pic = File('assets/images/default_camera.png');
-  File pic2 = File('assets/images/default_camera.png');
-  File pic3 = File('assets/images/default_camera.png');
-
-  showPreview(file) async {
-    file = await Get.to(() => PreviewPage(file: file));
-    if (file != null) {
-      setState(() {
-        pic = file;
-        Get.back();
-      });
-    }
-  }
-
-  showPreview2(file) async {
-    file = await Get.to(() => PreviewPage(file: file));
-    if (file != null) {
-      setState(() {
-        pic2 = file;
-        Get.back();
-      });
-    }
-  }
-
-  showPreview3(file) async {
-    file = await Get.to(() => PreviewPage(file: file));
-    if (file != null) {
-      setState(() {
-        pic3 = file;
-        Get.back();
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

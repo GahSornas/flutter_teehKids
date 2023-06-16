@@ -10,7 +10,7 @@ class TimerScreen extends StatefulWidget {
 }
 
 class _TimerScreenState extends State<TimerScreen> {
-  int _secondsRemaining = 20;
+  int _secondsRemaining = 10;
 
   @override
   void initState() {
@@ -27,7 +27,8 @@ class _TimerScreenState extends State<TimerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Timer Screen'),
+        backgroundColor: const Color(0xFFBAE8E8),
+        title: const Text('OdontApp'),
       ),
       body: TimerBuilder.periodic(Duration(seconds: 1), builder: (context) {
         if (_secondsRemaining <= 0) {
