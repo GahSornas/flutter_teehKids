@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'OdontApp',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFBAE8E8)),
         useMaterial3: true,
@@ -198,6 +198,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 padding: const EdgeInsets.only(
                     left: 20.0, right: 20, top: 10, bottom: 5),
                 child: TextFormField(
+                  keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(Icons.call),
                     hintText: 'Telefone',
@@ -214,7 +215,6 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
 
               //botão foto
-
               Row(
                 children: [
                   Attachment(pic: pic),
@@ -266,7 +266,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   style: ElevatedButton.styleFrom(
                     elevation: 0.0,
-                    textStyle: const TextStyle(fontSize: 16),
+                    textStyle: const TextStyle(fontSize: 12),
                   ),
                 ),
               ]),
