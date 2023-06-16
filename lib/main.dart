@@ -16,7 +16,7 @@ import 'package:pi3_flutter_1/widgets/attachment.dart';
 import 'package:pi3_flutter_1/widgets/attachment2.dart';
 import 'package:pi3_flutter_1/widgets/attachment3.dart';
 import 'package:pi3_flutter_1/widgets/notification.dart';
-import 'package:pi3_flutter_1/emergency_page.dart';
+import 'package:pi3_flutter_1/wait_page.dart';
 
 // Storage
 import 'package:firebase_storage/firebase_storage.dart';
@@ -282,7 +282,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => EmergenciesPage(),
+                          builder: (context) => TimerScreen(),
                         ),
                       );
                       ScaffoldMessenger.of(context).showSnackBar(
