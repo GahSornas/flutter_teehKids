@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-
+import 'avaliation_page.dart';
 
 class User {
   final String name;
@@ -25,7 +24,7 @@ void main() {
 
 class EmergenciesPage extends StatelessWidget {
   EmergenciesPage({Key? key}) : super(key: key);
-
+  
   final List<User> users = [
     User(
       name: 'Jorge Machado',
@@ -43,19 +42,19 @@ class EmergenciesPage extends StatelessWidget {
       name: 'Matheus Cavalcante',
       photoPath: 'assets/images/matheus.png',
       information: '★ ★ ★ ☆ ☆',
-      location: LatLng(40.7128, -74.0060),
+      location: LatLng(-23.567245, -46.648574),
     ),
     User(
       name: 'Rodrigo da Silva',
       photoPath: 'assets/images/rodrigo.png',
       information: '★ ★ ☆ ☆ ☆',
-      location: LatLng(-33.8675, 151.2070),
+      location: LatLng(-23.5475, -46.63611),
     ),
     User(
       name: 'Marcia Souza',
       photoPath: 'assets/images/marcia.png',
       information: '★ ★ ★ ★ ☆',
-      location: LatLng(25.2048, 55.2708),
+      location: LatLng(-23.5505199, -46.6333094),
     ),
   ];
 
@@ -71,7 +70,8 @@ class EmergenciesPage extends StatelessWidget {
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
-      if (permission != LocationPermission.whileInUse && permission != LocationPermission.always) {
+      if (permission != LocationPermission.whileInUse &&
+          permission != LocationPermission.always) {
         print('Permissão de localização negada');
         return;
       }
@@ -88,7 +88,8 @@ class EmergenciesPage extends StatelessWidget {
     // Cria as coordenadas de origem e destino
     LatLng origin = LatLng(position.latitude, position.longitude);
 
-    final url = 'https://www.google.com/maps/dir/?api=1&origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}';
+    final url =
+        'https://www.google.com/maps/dir/?api=1&origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}';
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -99,6 +100,7 @@ class EmergenciesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
           backgroundColor: const Color(0xFFBAE8E8),
