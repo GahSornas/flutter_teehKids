@@ -79,8 +79,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 //foto
   File pic = File('assets/images/default_camera.png');
-  File pic2 = File('assets/images/default_camera.png');
   File pic3 = File('assets/images/default_camera.png');
+  File pic2 = File('assets/images/default_camera.png');
 
   showPreview(file) async {
     file = await Get.to(() => PreviewPage(file: file));

@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+<<<<<<< Updated upstream
 import 'avaliation_page.dart';
+=======
+>>>>>>> Stashed changes
 
 class User {
   final String name;
@@ -30,7 +33,7 @@ class EmergenciesPage extends StatelessWidget {
       name: 'Jorge Machado',
       photoPath: 'assets/images/jorge.png',
       information: '★ ★ ★ ★ ☆',
-      location: LatLng(-23.5505, -46.6333),
+      location: LatLng(-23.5475, -46.63611),
     ),
     User(
       name: 'Ana Clara Falcão',
@@ -42,13 +45,21 @@ class EmergenciesPage extends StatelessWidget {
       name: 'Matheus Cavalcante',
       photoPath: 'assets/images/matheus.png',
       information: '★ ★ ★ ☆ ☆',
+<<<<<<< Updated upstream
       location: LatLng(-23.567245, -46.648574),
+=======
+      location: LatLng(-23.556017, -46.662791),
+>>>>>>> Stashed changes
     ),
     User(
       name: 'Rodrigo da Silva',
       photoPath: 'assets/images/rodrigo.png',
       information: '★ ★ ☆ ☆ ☆',
+<<<<<<< Updated upstream
       location: LatLng(-23.5475, -46.63611),
+=======
+      location: LatLng(-23.567245, -46.648574),
+>>>>>>> Stashed changes
     ),
     User(
       name: 'Marcia Souza',
